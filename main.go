@@ -109,15 +109,15 @@ func main() {
 			log.Fatal(err)
 		}
 		if b {
-			_, err = updateArtifact(artifact, vargs.Token)
+			_, err = deleteArtifact(artifact, vargs.Token)
 			if err != nil {
 				log.Fatal(err)
 			}
-		} else {
-			_, err = createArtifact(artifact, vargs.Token)
-			if err != nil {
-				log.Fatal(err)
-			}
+			time.Sleep(time.Second * 5)
+		}
+		_, err = createArtifact(artifact, vargs.Token)
+		if err != nil {
+			log.Fatal(err)
 		}
 	}
 }
