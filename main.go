@@ -99,6 +99,27 @@ func main() {
 			}
 		}
 	}
+	for _, d := range vargs.Jobs {
+		artifact, err := readArtifactFromFile(workspace.Path, d, vargs.ApiServer, vargs.Namespace, vargs.Tag)
+		if err != nil {
+			log.Fatal(err)
+		}
+		b, err := existsArtifact(artifact, vargs.Token)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if b {
+			_, err = updateArtifact(artifact, vargs.Token)
+			if err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			_, err = createArtifact(artifact, vargs.Token)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
 }
 
 func doRequest(param ReqEnvelope) (bool, error) {
@@ -180,6 +201,9 @@ func readArtifactFromFile(workspace string, artifactFile string, apiserver strin
 	}
 	if artifact.Kind == "Deployment" {
 		artifact.Url = fmt.Sprintf("%s/apis/extensions/v1beta1/namespaces/%s/deployments", apiserver, namespace)
+	}
+	if artifact.Kind == "Job" {
+		artifact.Url = fmt.Sprintf("%s/apis/batch/v1/namespaces/%s/jobs", apiserver, namespace)
 	}
 	return artifact, err
 }
