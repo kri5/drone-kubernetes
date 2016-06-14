@@ -68,7 +68,7 @@ func existsArtifact(artifact Artifact, token string) (bool, error) {
 
 }
 
-func createArtifact(artifact Artifact, token string) {
+func createArtifact(artifact Artifact, token string) (bool, error) {
 	if debug {
 		log.Println("createArtifact ")
 	}
@@ -79,10 +79,10 @@ func createArtifact(artifact Artifact, token string) {
 		Json:  artifact.Data,
 		Verb:  "POST",
 	}
-	doRequest(param)
+	return doRequest(param)
 }
 
-func updateArtifact(artifact Artifact, token string) {
+func updateArtifact(artifact Artifact, token string) (bool, error) {
 	if debug {
 		log.Println("updateArtifact ")
 	}
@@ -93,5 +93,5 @@ func updateArtifact(artifact Artifact, token string) {
 		Json:  artifact.Data,
 		Verb:  "PUT",
 	}
-	doRequest(param)
+	return doRequest(param)
 }

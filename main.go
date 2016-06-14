@@ -52,28 +52,51 @@ func main() {
 		if debug {
 			log.Println("Artifact loaded: " + artifact.Url)
 		}
-		if b, _ := existsArtifact(artifact, vargs.Token); b {
-			deleteArtifact(artifact, vargs.Token)
+		b, err := existsArtifact(artifact, vargs.Token)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if b {
+			_, err = deleteArtifact(artifact, vargs.Token)
+			if err != nil {
+				log.Fatal(err)
+			}
 			time.Sleep(time.Second * 5)
 		}
-		createArtifact(artifact, vargs.Token)
+		_, err = createArtifact(artifact, vargs.Token)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	for _, rc := range vargs.Services {
 		artifact, err := readArtifactFromFile(workspace.Path, rc, vargs.ApiServer, vargs.Namespace, vargs.Tag)
 		if err != nil {
 			log.Fatal(err)
 		}
-		createArtifact(artifact, vargs.Token)
+		_, err = createArtifact(artifact, vargs.Token)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	for _, d := range vargs.Deployments {
 		artifact, err := readArtifactFromFile(workspace.Path, d, vargs.ApiServer, vargs.Namespace, vargs.Tag)
 		if err != nil {
 			log.Fatal(err)
 		}
-		if b, _ := existsArtifact(artifact, vargs.Token); b {
-			updateArtifact(artifact, vargs.Token)
+		b, err := existsArtifact(artifact, vargs.Token)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if b {
+			_, err = updateArtifact(artifact, vargs.Token)
+			if err != nil {
+				log.Fatal(err)
+			}
 		} else {
-			createArtifact(artifact, vargs.Token)
+			_, err = createArtifact(artifact, vargs.Token)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 }
